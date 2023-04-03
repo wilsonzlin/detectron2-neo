@@ -3,6 +3,7 @@
 This is a fork of [Detectron2](https://github.com/facebookresearch/detectron2) with prebuilt wheels for PyTorch 2.0.0 and:
 
 ||Python 3.8|Python 3.9|Python 3.10|Python 3.11|
+|---|---|---|---|---|
 |CPU|whl|whl|whl|whl|
 |CUDA 11.7|whl|whl|whl|whl|
 |CUDA 11.8|whl|whl|whl|whl|
