@@ -64,9 +64,6 @@ echo "D2_VERSION_SUFFIX: $D2_VERSION_SUFFIX"   # e.g. +d779ea63faa54fe42b9b4c280
 echo "PYTHON_VERSION: $PYTHON_VERSION"         # e.g. 3.11
 echo "PYTORCH_VERSION: $PYTORCH_VERSION"       # e.g. 2.0.0
 
-yum -y install ninja-build
-ln -sv /usr/bin/ninja-build /usr/bin/ninja || true
-
 pip install -U pip numpy
 pip install "torch==$PYTORCH_VERSION" -f "https://download.pytorch.org/whl/$COMPUTE_PLATFORM/torch_stable.html"
 
