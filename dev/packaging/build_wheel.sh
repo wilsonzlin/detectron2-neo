@@ -27,12 +27,12 @@ cu117)
   ;;
 rocm5.4.2)
   export ROCM_HOME=/opt/rocm-5.4.2/
-  export CUDA_HOME=$CUDA_HOME
+  export CUDA_HOME=$ROCM_HOME
   export PYTORCH_ROCM_ARCH="gfx900;gfx906;gfx908;gfx90a;gfx1030"
   ;;
 rocm5.3)
   export ROCM_HOME=/opt/rocm-5.3/
-  export CUDA_HOME=$CUDA_HOME
+  export CUDA_HOME=$ROCM_HOME
   export PYTORCH_ROCM_ARCH="gfx900;gfx906;gfx908;gfx90a;gfx1030"
   ;;
 cpu)
