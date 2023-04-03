@@ -1,0 +1,31 @@
+name: Build and upload wheels
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    strategy:
+      fail-fast: false
+      matrix:
+        compute_platform: ["cpu", "rocm5.3", "rocm5.4.2", "cu117", "cu118"]
+        python_version: ["3.8", "3.9", "3.10", "3.11"]
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Set up Backblaze B2 CLI
+        uses: wilsonzlin/setup-b2@v3
+
+      - name: Build wheel
+        env:
+          COMPUTE_PLATFORM: ${{ matrix.compute_platform }}
+          PYTHON_VERSION: ${{ matrix.python_version }}
+          PYTORCH_VERSION: "2.0.0"
+        run: bash ./dev/packaging/build_wheel_in_docker
+
+      - name: Upload log and output files
+        working-directory: ./fuzz
+        run: |
+          b2 authorize-account ${{ secrets.CICD_CLI_B2_KEY_ID }} ${{ secrets.CICD_CLI_B2_APPLICATION_KEY }}
+          b2 sync --compareVersions size ./wheel/ b2://${{ secrets.CICD_CLI_B2_BUCKET_NAME }}/detectron2-neo/

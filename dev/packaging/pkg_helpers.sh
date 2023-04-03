@@ -5,7 +5,7 @@ setup_cuda() {
   # Now work out the CUDA settings
   # Like other torch domain libraries, we choose common GPU architectures only.
   # See https://github.com/pytorch/pytorch/blob/master/torch/utils/cpp_extension.py
-  # and https://github.com/pytorch/vision/blob/main/packaging/pkg_helpers.bash for reference.
+  # and https://github.com/pytorch/vision/blob/main/packaging/pkg_helpers.sh for reference.
   export FORCE_CUDA=1
   case "$COMPUTE_PLATFORM" in
     cu118)

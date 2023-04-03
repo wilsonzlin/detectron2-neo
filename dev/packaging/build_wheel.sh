@@ -6,7 +6,7 @@ set -Eeuo pipefail
 ldconfig  # https://github.com/NVIDIA/nvidia-docker/issues/854
 
 script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "$script_dir/pkg_helpers.bash"
+. "$script_dir/pkg_helpers.sh"
 
 echo "Build Settings:"
 echo "COMPUTE_PLATFORM: $COMPUTE_PLATFORM"     # e.g. rocm5.4.2
