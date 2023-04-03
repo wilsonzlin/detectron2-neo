@@ -18,14 +18,16 @@ jobs:
       - name: Set up Backblaze B2 CLI
         uses: wilsonzlin/setup-b2@v3
 
-      - name: Build wheel
+      - name: Build and upload wheel
         env:
           COMPUTE_PLATFORM: ${{ matrix.compute_platform }}
           PYTHON_VERSION: ${{ matrix.python_version }}
           PYTORCH_VERSION: "2.0.0"
-        run: bash ./dev/packaging/build_wheel_in_docker.sh
-
-      - name: Upload wheel
         run: |
+          if [[ "${{ matrix.python_version }}" == '3.11' ]] && [[ "${{ matrix.compute_platform }}" == rocm* ]]; then
+            echo "ROCm packages are currently unavailable for Python 3.11 on x86-64, skipping"
+            return
+          fi
+          bash ./dev/packaging/build_wheel_in_docker.sh
           b2 authorize-account ${{ secrets.CICD_B2_KEY_ID }} ${{ secrets.CICD_B2_APPLICATION_KEY }}
           b2 sync --compareVersions size ./wheel/ b2://${{ secrets.CICD_B2_BUCKET_NAME }}/detectron2-neo/

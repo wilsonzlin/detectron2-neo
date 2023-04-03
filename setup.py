@@ -1,14 +1,15 @@
 #!/usr/bin/env python
 # Copyright (c) Facebook, Inc. and its affiliates.
 
+from datetime import datetime
+from os import path
+from setuptools import find_packages, setup
+from torch.utils.cpp_extension import CUDA_HOME, ROCM_HOME, CppExtension, CUDAExtension
+from typing import List
 import glob
 import os
 import shutil
-from os import path
-from setuptools import find_packages, setup
-from typing import List
 import torch
-from torch.utils.cpp_extension import CUDA_HOME, CppExtension, CUDAExtension
 
 torch_ver = [int(x) for x in torch.__version__.split(".")[:2]]
 assert torch_ver >= [1, 8], "Requires PyTorch >= 1.8"
@@ -25,8 +26,6 @@ def get_version():
     suffix = os.getenv("D2_VERSION_SUFFIX", "")
     version = version + suffix
     if os.getenv("BUILD_NIGHTLY", "0") == "1":
-        from datetime import datetime
-
         date_str = datetime.today().strftime("%y%m%d")
         version = version + ".dev" + date_str
 
@@ -43,8 +42,6 @@ def get_extensions():
 
     main_source = path.join(extensions_dir, "vision.cpp")
     sources = glob.glob(path.join(extensions_dir, "**", "*.cpp"))
-
-    from torch.utils.cpp_extension import ROCM_HOME
 
     is_rocm_pytorch = (torch.version.hip is not None) and (ROCM_HOME is not None)
 
