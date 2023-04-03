@@ -12,6 +12,25 @@ jobs:
         compute_platform: ["cpu", "rocm5.3", "rocm5.4.2", "cu117", "cu118"]
         python_version: ["3.8", "3.9", "3.10", "3.11"]
     steps:
+      - name: Maximise build space
+        # Reduce the likelihood of ENOSPC.
+        run: |
+          echo 'Space available before:'
+          echo '==========='
+          df -h
+          echo
+
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY" \
+            /opt/ghc \
+            /usr/local/lib/android \
+            /usr/local/share/boost \
+            /usr/share/dotnet \
+
+          echo 'Space available after:'
+          echo '==========='
+          df -h
+          echo
+
       - name: Clone repo
         uses: actions/checkout@v1
 
