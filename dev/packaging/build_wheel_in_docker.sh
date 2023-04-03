@@ -32,7 +32,7 @@ docker run --rm -it \
   --user $EUID:$EUID \
   --mount "type=bind,source=$(pwd),target=/detectron2" \
   -e COMPUTE_PLATFORM=$compute_platform \
-  -e D2_VERSION_SUFFIX=+$(git rev-parse HEAD)-$compute_platform \
+  -e D2_VERSION_SUFFIX="+${GITHUB_SHA:-$(git rev-parse HEAD)}-$compute_platform" \
   -e PYTHON_VERSION=$python_ver \
   -e PYTORCH_VERSION=$pytorch_ver \
   -w /detectron2 \
