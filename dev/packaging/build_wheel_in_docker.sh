@@ -20,7 +20,7 @@ case "$compute_platform" in
     image=manylinux-rocm:${compute_platform/rocm/}
     ;;
   cpu)
-    image=manylinux-cuda101:latest
+    image=manylinux-cpu:latest
     ;;
   *)
     echo "Unrecognized compute_platform=$compute_platform"
