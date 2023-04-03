@@ -32,11 +32,12 @@ build_one() {
 
   for py in "${py_versions[@]}"; do
     docker run --rm -it \
-      --mount type=bind,source="$(pwd)",target=/detectron2 \
+      --user $EUID:$EUID \
+      --mount "type=bind,source=$(pwd),target=/detectron2" \
       -e COMPUTE_PLATFORM=$compute_platform \
       -e D2_VERSION_SUFFIX=+$(git rev-parse HEAD)-$compute_platform \
-      -e PYTORCH_VERSION=$pytorch_ver \
       -e PYTHON_VERSION=$py \
+      -e PYTORCH_VERSION=$pytorch_ver \
       -w /detectron2 \
       pytorch/$image \
       ./dev/packaging/build_wheel.sh
