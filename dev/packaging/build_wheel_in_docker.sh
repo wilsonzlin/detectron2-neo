@@ -28,7 +28,7 @@ case "$compute_platform" in
     ;;
 esac
 
-docker run --rm -it \
+docker run --rm \
   --user $EUID:$EUID \
   --mount "type=bind,source=$(pwd),target=/detectron2" \
   -e COMPUTE_PLATFORM=$compute_platform \
