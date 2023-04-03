@@ -24,8 +24,7 @@ jobs:
           PYTORCH_VERSION: "2.0.0"
         run: bash ./dev/packaging/build_wheel_in_docker.sh
 
-      - name: Upload log and output files
-        working-directory: ./fuzz
+      - name: Upload wheels
         run: |
           b2 authorize-account ${{ secrets.CICD_CLI_B2_KEY_ID }} ${{ secrets.CICD_CLI_B2_APPLICATION_KEY }}
           b2 sync --compareVersions size ./wheel/ b2://${{ secrets.CICD_CLI_B2_BUCKET_NAME }}/detectron2-neo/
