@@ -12,7 +12,8 @@ jobs:
         compute_platform: ["cpu", "rocm5.3", "rocm5.4.2", "cu117", "cu118"]
         python_version: ["3.8", "3.9", "3.10", "3.11"]
     steps:
-      - uses: actions/checkout@v1
+      - name: Clone repo
+        uses: actions/checkout@v1
 
       - name: Set up Backblaze B2 CLI
         uses: wilsonzlin/setup-b2@v3
@@ -24,7 +25,7 @@ jobs:
           PYTORCH_VERSION: "2.0.0"
         run: bash ./dev/packaging/build_wheel_in_docker.sh
 
-      - name: Upload wheels
+      - name: Upload wheel
         run: |
           b2 authorize-account ${{ secrets.CICD_CLI_B2_KEY_ID }} ${{ secrets.CICD_CLI_B2_APPLICATION_KEY }}
           b2 sync --compareVersions size ./wheel/ b2://${{ secrets.CICD_CLI_B2_BUCKET_NAME }}/detectron2-neo/
