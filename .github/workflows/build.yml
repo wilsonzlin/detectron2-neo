@@ -26,8 +26,8 @@ jobs:
         run: |
           if [[ "${{ matrix.python_version }}" == '3.11' ]] && [[ "${{ matrix.compute_platform }}" == rocm* ]]; then
             echo "ROCm packages are currently unavailable for Python 3.11 on x86-64, skipping"
-            return
+            exit 0
           fi
           bash ./dev/packaging/build_wheel_in_docker.sh
           b2 authorize-account ${{ secrets.CICD_B2_KEY_ID }} ${{ secrets.CICD_B2_APPLICATION_KEY }}
-          b2 sync --compareVersions size ./wheel/ b2://${{ secrets.CICD_B2_BUCKET_NAME }}/detectron2-neo/
+          b2 sync --compareVersions size ./wheels/ b2://${{ secrets.CICD_B2_BUCKET_NAME }}/detectron2-neo/
