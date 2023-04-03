@@ -21,6 +21,10 @@ _ext
 build/
 dist/
 wheels/
+# ROCm
+*.hip
+*_hip.cpp
+*_hip.h
 
 # pytorch/python/numpy formats
 *.pth

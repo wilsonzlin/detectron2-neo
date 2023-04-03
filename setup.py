@@ -46,11 +46,7 @@ def get_extensions():
 
     from torch.utils.cpp_extension import ROCM_HOME
 
-    is_rocm_pytorch = (
-        True if ((torch.version.hip is not None) and (ROCM_HOME is not None)) else False
-    )
-    if is_rocm_pytorch:
-        assert torch_ver >= [1, 8], "ROCM support requires PyTorch >= 1.8!"
+    is_rocm_pytorch = (torch.version.hip is not None) and (ROCM_HOME is not None)
 
     # common code between cuda and rocm platforms, for hipify version [1,0,0] and later.
     source_cuda = glob.glob(path.join(extensions_dir, "**", "*.cu")) + glob.glob(
@@ -81,12 +77,6 @@ def get_extensions():
         else:
             define_macros += [("WITH_HIP", None)]
             extra_compile_args["nvcc"] = []
-
-        if torch_ver < [1, 7]:
-            # supported by https://github.com/pytorch/pytorch/pull/43931
-            CC = os.environ.get("CC", None)
-            if CC is not None:
-                extra_compile_args["nvcc"].append("-ccbin={}".format(CC))
 
     include_dirs = [extensions_dir]
 
@@ -154,7 +144,7 @@ setup(
     packages=find_packages(exclude=("configs", "tests*")) + list(PROJECTS.keys()),
     package_dir=PROJECTS,
     package_data={"detectron2.model_zoo": get_model_zoo_configs()},
-    python_requires=">=3.7",
+    python_requires=">=3.8",
     install_requires=[
         # These dependencies are not pure-python.
         # In general, avoid adding dependencies that are not pure-python because they are not
@@ -181,7 +171,6 @@ setup(
         # on compatible version of iopath.
         "fvcore>=0.1.5,<0.1.6",  # required like this to make it pip installable
         "iopath>=0.1.7,<0.1.10",
-        "dataclasses; python_version<'3.7'",
         "omegaconf>=2.1",
         "hydra-core>=1.1",
         "black",

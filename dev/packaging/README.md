@@ -1,12 +1,12 @@
 
-## To build a cu101 wheel for release:
+## To build a cu118 wheel for release:
 
 ```
-$ nvidia-docker run -it --storage-opt "size=20GB" --name pt  pytorch/manylinux-cuda101
+$ nvidia-docker run -it --storage-opt "size=20GB" --name pt  pytorch/manylinux-cuda118
 # inside the container:
 # git clone https://github.com/facebookresearch/detectron2/
 # cd detectron2
-# export CU_VERSION=cu101 D2_VERSION_SUFFIX= PYTHON_VERSION=3.7 PYTORCH_VERSION=1.8
+# export COMPUTE_PLATFORM=cu118 D2_VERSION_SUFFIX= PYTHON_VERSION=3.11 PYTORCH_VERSION=2.0.0
 # ./dev/packaging/build_wheel.sh
 ```
 

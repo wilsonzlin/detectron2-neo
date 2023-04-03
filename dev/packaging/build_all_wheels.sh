@@ -1,65 +1,53 @@
 #!/bin/bash -e
 # Copyright (c) Facebook, Inc. and its affiliates.
 
+set -Eeuo pipefail
+
 [[ -d "dev/packaging" ]] || {
   echo "Please run this script at detectron2 root!"
   exit 1
 }
 
 build_one() {
-  cu=$1
+  compute_platform=$1
   pytorch_ver=$2
 
-  case "$cu" in
+  case "$compute_platform" in
     cu*)
-      container_name=manylinux-cuda${cu/cu/}
+      image=manylinux-cuda${compute_platform/cu/}:latest
+      ;;
+    rocm*)
+      image=manylinux-rocm:${compute_platform/rocm/}
       ;;
     cpu)
-      container_name=manylinux-cuda101
+      image=manylinux-cuda101:latest
       ;;
     *)
-      echo "Unrecognized cu=$cu"
+      echo "Unrecognized compute_platform=$compute_platform"
       exit 1
       ;;
   esac
 
-  echo "Launching container $container_name ..."
-  container_id="$container_name"_"$cu"_"$pytorch_ver"
-
-  py_versions=(3.7 3.8 3.9)
+  py_versions=(3.8 3.9 3.10 3.11)
 
   for py in "${py_versions[@]}"; do
-    docker run -itd \
-      --name "$container_id" \
+    docker run --rm -it \
       --mount type=bind,source="$(pwd)",target=/detectron2 \
-      pytorch/$container_name
-
-    cat <<EOF | docker exec -i $container_id sh
-      export CU_VERSION=$cu D2_VERSION_SUFFIX=+$cu PYTHON_VERSION=$py
-      export PYTORCH_VERSION=$pytorch_ver
-      cd /detectron2 && ./dev/packaging/build_wheel.sh
-EOF
-
-    docker container stop $container_id
-    docker container rm $container_id
+      -e COMPUTE_PLATFORM=$compute_platform \
+      -e D2_VERSION_SUFFIX=+$(git rev-parse HEAD)-$compute_platform \
+      -e PYTORCH_VERSION=$pytorch_ver \
+      -e PYTHON_VERSION=$py \
+      -w /detectron2 \
+      pytorch/$image \
+      ./dev/packaging/build_wheel.sh
   done
 }
-
 
 if [[ -n "$1" ]] && [[ -n "$2" ]]; then
   build_one "$1" "$2"
 else
-  build_one cu113 1.10
-  build_one cu111 1.10
-  build_one cu102 1.10
-  build_one cpu 1.10
-
-  build_one cu111 1.9
-  build_one cu102 1.9
-  build_one cpu 1.9
-
-  build_one cu111 1.8
-  build_one cu102 1.8
-  build_one cu101 1.8
-  build_one cpu 1.8
+  build_one cu118 2.0.0
+  build_one cu117 2.0.0
+  build_one rocm5.4.2 2.0.0
+  build_one cpu 2.0.0
 fi
