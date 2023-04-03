@@ -22,7 +22,7 @@ jobs:
           COMPUTE_PLATFORM: ${{ matrix.compute_platform }}
           PYTHON_VERSION: ${{ matrix.python_version }}
           PYTORCH_VERSION: "2.0.0"
-        run: bash ./dev/packaging/build_wheel_in_docker
+        run: bash ./dev/packaging/build_wheel_in_docker.sh
 
       - name: Upload log and output files
         working-directory: ./fuzz
