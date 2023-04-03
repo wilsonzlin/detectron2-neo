@@ -28,8 +28,8 @@ case "$compute_platform" in
     ;;
 esac
 
+# We don't run as the current user, as we need to install system packages. Instead, we'll chown output files after the build script completes.
 docker run --rm \
-  --user $EUID:$EUID \
   --mount "type=bind,source=$(pwd),target=/detectron2" \
   -e COMPUTE_PLATFORM=$compute_platform \
   -e D2_VERSION_SUFFIX="+${GITHUB_SHA:-$(git rev-parse HEAD)}-$compute_platform" \
@@ -37,4 +37,4 @@ docker run --rm \
   -e PYTORCH_VERSION=$pytorch_ver \
   -w /detectron2 \
   pytorch/$image \
-  ./dev/packaging/build_wheel.sh
+  bash -c "./dev/packaging/build_wheel.sh && chown -R $EUID:$EUID wheels/"
