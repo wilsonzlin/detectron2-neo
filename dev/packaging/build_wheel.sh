@@ -9,6 +9,9 @@ python_ver=$PYTHON_VERSION
 pytorch_ver=$PYTORCH_VERSION
 
 # Set up Torch compute platform.
+#
+# For CUDA:
+# ---------
 # Like other torch domain libraries, we choose common GPU architectures only.
 # See https://github.com/pytorch/pytorch/blob/master/torch/utils/cpp_extension.py
 # and https://github.com/pytorch/vision/blob/main/packaging/pkg_helpers.sh for reference.
@@ -70,10 +73,9 @@ export PATH="/opt/python/$python_abi/bin:$PATH"
 echo "Build Settings:"
 echo "COMPUTE_PLATFORM: $compute_platform"     # e.g. rocm5.4.2
 echo "D2_VERSION_SUFFIX: $d2_version_suffix"   # e.g. +d779ea63faa54fe42b9b4c280365eaafccb280d6-cu118 or ""
-echo "PYTHON_VERSION: $python_ver"         # e.g. 3.11
-echo "PYTORCH_VERSION: $pytorch_ver"       # e.g. 2.0.0
+echo "PYTHON_VERSION: $python_ver"             # e.g. 3.11
+echo "PYTORCH_VERSION: $pytorch_ver"           # e.g. 2.0.0
 
-pip install -U pip numpy
 pip install "torch==$pytorch_pkg_ver" -f "https://download.pytorch.org/whl/$compute_platform/torch_stable.html"
 
 # use separate directories to allow parallel build
